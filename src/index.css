@@ -271,6 +271,10 @@ p {
   margin: 0 2rem;
 }
 
+.--ml5px {
+  margin-left: 5px;
+}
+
 /* Padding */
 .--p {
   padding: 1rem;
