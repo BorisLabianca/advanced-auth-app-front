@@ -3,6 +3,7 @@ import Card from "../../components/card/Card";
 import styles from "./Auth.module.scss";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import PasswordInput from "../../components/passwordInput/PasswordInput";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -34,13 +35,11 @@ const Login = () => {
               value={email}
               onChange={handleInputChange}
             />
-            <input
-              type="password"
+            <PasswordInput
+              onChange={handleInputChange}
               placeholder="Password"
-              required
               name="password"
               value={password}
-              onChange={handleInputChange}
             />
             <button className="--btn --btn-primary --btn-block" type="submit">
               Login
