@@ -5,6 +5,7 @@ import Footer from "./components/footer/Footer";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Forgot from "./pages/auth/Forgot";
+import Reset from "./pages/auth/Reset";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
+          <Route path="/reset-password/:resetToken" element={<Reset />} />
         </Routes>
         <Footer />
       </Router>
