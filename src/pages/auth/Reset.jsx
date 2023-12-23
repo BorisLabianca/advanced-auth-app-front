@@ -34,13 +34,13 @@ const Reset = () => {
           <form onSubmit={loginUser}>
             <PasswordInput
               onChange={handleInputChange}
-              placeholder="Password"
+              placeholder="New Password"
               name="password"
               value={password}
             />
             <PasswordInput
               onChange={handleInputChange}
-              placeholder="Confirm Password"
+              placeholder="Confirm New Password"
               name="confirmPassword"
               value={confirmPassword}
             />

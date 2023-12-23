@@ -16,8 +16,8 @@ const Header = () => {
     pathname === "/login" ||
     pathname === "/register" ||
     pathname === "/forgot" ||
-    pathname === "/resetPassword/:resetToken" ||
-    pathname === "/loginWithCode/:email"
+    pathname === `/reset-password/${pathname.split("/")[2]}` ||
+    pathname === `/login-with-code/${pathname.split("/")[2]}`
   )
     return null;
 
