@@ -4,6 +4,7 @@ import { useState } from "react";
 import PasswordInput from "../../components/passwordInput/PasswordInput";
 import PasswordStrengthChecker from "../../components/passwordStrengthChecker/PasswordStrengthChecker";
 import "./ChangePassword.scss";
+import { useNotification } from "../../hooks";
 
 const initialState = {
   currentPassword: "",
@@ -14,21 +15,28 @@ const initialState = {
 const ChangePassword = () => {
   const [formData, setFormData] = useState(initialState);
   const { currentPassword, newPassword, confirmNewPassword } = formData;
+  const { updateNotification } = useNotification();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    return updateNotification("info", "Test to see if it works");
+  };
+
   return (
     <section className="verify">
       <div className="container">
         <PageMenu />
-        <h2>Change Password</h2>
-        <div className="--flex-start change-password">
+
+        <div className="--flex-center change-password --dir-column">
+          <h2>Change Password</h2>
           <Card cardClass="card">
             <>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div>
                   <label>Current Password:</label>
                   <PasswordInput
