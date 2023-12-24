@@ -10,6 +10,7 @@ import LoginWithCode from "./pages/auth/LoginWithCode";
 import Verify from "./pages/auth/Verify";
 import Profile from "./pages/profile/Profile";
 import ChangePassword from "./pages/changePassword/ChangePassword";
+import UserList from "./pages/userList/UserList";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/verify/:verificationToken" element={<Verify />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/users" element={<UserList />} />
         </Routes>
         <Footer />
       </Router>
