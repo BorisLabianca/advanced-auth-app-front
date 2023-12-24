@@ -521,5 +521,5 @@ a:hover {
   background-color: #fff;
 }
 .verify {
-  height: calc(100vh - 142px);
+  min-height: calc(100vh - 142px);
 }

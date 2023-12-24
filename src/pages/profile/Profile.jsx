@@ -1,8 +1,8 @@
 import Card from "../../components/card/Card";
 import avatar from "../../assets/avatarr.png";
-import "./Profile.scss";
 import { useState } from "react";
 import PageMenu from "../../components/pageMenu/PageMenu";
+import "./Profile.scss";
 
 const initialState = {
   name: "",
