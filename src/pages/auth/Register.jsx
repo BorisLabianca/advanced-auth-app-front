@@ -1,10 +1,15 @@
 import { TiUserAddOutline } from "react-icons/ti";
 import Card from "../../components/card/Card";
 import styles from "./Auth.module.scss";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../../components/passwordInput/PasswordInput";
 import PasswordStrengthChecker from "../../components/passwordStrengthChecker/PasswordStrengthChecker";
+import { useNotification } from "../../hooks";
+import { validateEmail } from "../../redux/features/auth/authService";
+import { useDispatch, useSelector } from "react-redux";
+import { RESET, register } from "../../redux/features/auth/authSlice";
+import Loader from "../../components/loader/Loader";
 
 const initialState = {
   name: "",
@@ -14,6 +19,12 @@ const initialState = {
 };
 
 const Register = () => {
+  const { updateNotification } = useNotification();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isLoading, isLoggedIn, isSuccess, message, isError } = useSelector(
+    (store) => store.auth
+  );
   const [formData, setFormData] = useState(initialState);
   const { name, email, password, confirmPassword } = formData;
 
@@ -22,12 +33,39 @@ const Register = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const registerUser = (event) => {
+  const registerUser = async (event) => {
     event.preventDefault();
+    if (!name || !email || !password)
+      return updateNotification("error", "All fileds are required.");
+    if (password.length < 8)
+      return updateNotification(
+        "warning",
+        "Password must be at least 8 characters long."
+      );
+    if (!validateEmail(email))
+      return updateNotification("warning", "Please enter a valid email.");
+    if (password !== confirmPassword)
+      return updateNotification("warning", "Passwords do not match.");
+
+    const userData = { name, email, password };
+
+    await dispatch(register(userData));
   };
+
+  useEffect(() => {
+    if (isSuccess && isLoggedIn) {
+      updateNotification("success", "Registration successfull.");
+      navigate("/profile");
+    }
+    if (isError) {
+      updateNotification("error", message);
+    }
+    dispatch(RESET());
+  }, [isLoggedIn, isSuccess, dispatch, navigate, isError, message]);
 
   return (
     <div className={`container ${styles.auth}`}>
+      {isLoading && <Loader />}
       <Card>
         <div className={styles.form}>
           <div className="--flex-center">
@@ -63,6 +101,11 @@ const Register = () => {
               placeholder="Confirm Password"
               name="confirmPassword"
               value={confirmPassword}
+              onPaste={(event) => {
+                event.preventDefault();
+                updateNotification("warning", "Cannot paste into this field.");
+                return false;
+              }}
             />
             <PasswordStrengthChecker password={password} />
             <button className="--btn --btn-primary --btn-block" type="submit">

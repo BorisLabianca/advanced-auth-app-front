@@ -8,10 +8,10 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <NotificationProvider>
+    <NotificationProvider>
+      <Provider store={store}>
         <App />
-      </NotificationProvider>
-    </Provider>
+      </Provider>
+    </NotificationProvider>
   </React.StrictMode>
 );
