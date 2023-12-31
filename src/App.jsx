@@ -11,6 +11,9 @@ import Verify from "./pages/auth/Verify";
 import Profile from "./pages/profile/Profile";
 import ChangePassword from "./pages/changePassword/ChangePassword";
 import UserList from "./pages/userList/UserList";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 function App() {
   return (
