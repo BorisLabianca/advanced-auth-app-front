@@ -11,9 +11,15 @@ export const validateEmail = (email) => {
 
 const register = async (userData) => {
   const response = await axios.post(`${apiUrl}register`, userData);
+  return response.data;
+};
+
+const login = async (userData) => {
+  const response = await axios.post(`${apiUrl}login`, userData);
   console.log(response);
   return response.data;
 };
-const authService = { register };
+
+const authService = { register, login };
 
 export default authService;
