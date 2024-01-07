@@ -44,6 +44,19 @@ export const login = createAsyncThunk(
     }
   }
 );
+export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
+  try {
+    return await authService.logout();
+  } catch (error) {
+    const message =
+      (error.response && error.response.data) ||
+      error.message ||
+      error.response.data.error ||
+      error.response.data.warning ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
 
 const authSlice = createSlice({
   name: "auth",
@@ -82,13 +95,26 @@ const authSlice = createSlice({
         state.isSuccess = true;
         state.isLoggedIn = true;
         state.user = action.payload;
-        console.log(action.payload);
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
         state.user = null;
+      })
+      .addCase(logout.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isLoggedIn = false;
+        state.user = null;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });

@@ -2,14 +2,27 @@ import { BiLogIn } from "react-icons/bi";
 import { FaUserCircle } from "react-icons/fa";
 import "./Header.scss";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { RESET, logout } from "../../redux/features/auth/authSlice";
+import { useNotification } from "../../hooks";
 
 const activeLink = ({ isActive }) => (isActive ? "active" : "");
 
 const Header = () => {
+  const dispatch = useDispatch();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { updateNotification } = useNotification();
+
   const goHome = () => {
     navigate("/");
+  };
+
+  const logoutUser = async () => {
+    dispatch(RESET());
+    const response = await dispatch(logout());
+    updateNotification("success", response.payload.success);
+    navigate("/login");
   };
 
   if (
@@ -45,7 +58,9 @@ const Header = () => {
             </NavLink>
           </li>
           <li>
-            <button className="--btn --btn-secondary">Logout</button>
+            <button className="--btn --btn-secondary" onClick={logoutUser}>
+              Logout
+            </button>
           </li>
         </ul>
       </nav>
