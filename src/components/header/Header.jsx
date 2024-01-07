@@ -5,6 +5,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { RESET, logout } from "../../redux/features/auth/authSlice";
 import { useNotification } from "../../hooks";
+import { ShowWhileLoggedIn, ShowWhileLoggedOut } from "../protect/HiddenLink";
 
 const activeLink = ({ isActive }) => (isActive ? "active" : "");
 
@@ -43,25 +44,31 @@ const Header = () => {
         </div>
 
         <ul className="home-links">
-          <li className="--flex-center">
-            <FaUserCircle size={20} />
-            <p className="--color-white --ml5px">Hi, Bobs</p>
-          </li>
-          <li>
-            <button className="--btn --btn-primary">
-              <Link to="/login">Login</Link>
-            </button>
-          </li>
-          <li>
-            <NavLink to="/profile" className={activeLink}>
-              Profile
-            </NavLink>
-          </li>
-          <li>
-            <button className="--btn --btn-secondary" onClick={logoutUser}>
-              Logout
-            </button>
-          </li>
+          <ShowWhileLoggedIn>
+            <li className="--flex-center">
+              <FaUserCircle size={20} />
+              <p className="--color-white --ml5px">Hi, Bobs</p>
+            </li>
+          </ShowWhileLoggedIn>
+          <ShowWhileLoggedOut>
+            <li>
+              <button className="--btn --btn-primary">
+                <Link to="/login">Login</Link>
+              </button>
+            </li>
+          </ShowWhileLoggedOut>
+          <ShowWhileLoggedIn>
+            <li>
+              <NavLink to="/profile" className={activeLink}>
+                Profile
+              </NavLink>
+            </li>
+            <li>
+              <button className="--btn --btn-secondary" onClick={logoutUser}>
+                Logout
+              </button>
+            </li>
+          </ShowWhileLoggedIn>
         </ul>
       </nav>
     </header>
