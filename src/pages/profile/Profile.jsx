@@ -1,24 +1,29 @@
 import Card from "../../components/card/Card";
 import avatar from "../../assets/avatarr.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageMenu from "../../components/pageMenu/PageMenu";
 import "./Profile.scss";
 import useRedirectLoggedOutUser from "../../hooks/useRedirectLoggedOutUser";
-
-const initialState = {
-  name: "",
-  email: "",
-  phone: "",
-  photo: "",
-  bio: "",
-  role: "",
-  isVerified: false,
-};
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "../../redux/features/auth/authSlice";
+import Loader from "../../components/loader/Loader";
 
 const Profile = () => {
   useRedirectLoggedOutUser("/login");
+  const dispatch = useDispatch();
+  const { isLoading, isLoggedIn, isSuccess, message, user } = useSelector(
+    (state) => state.auth
+  );
+  const initialState = {
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    photo: user?.photo || "",
+    bio: user?.bio || "",
+    role: user?.role || "",
+    isVerified: user?.isVerified || false,
+  };
   const [profile, setProfile] = useState(initialState);
-  const { name, email, phone, photo, bio, role, isVerified } = profile;
 
   const handleImageChange = () => {};
 
@@ -26,6 +31,12 @@ const Profile = () => {
     const { name, value } = event.target;
     setProfile({ ...profile, [name]: value });
   };
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
+
+  if (user === null) return <Loader />;
 
   return (
     <section>
@@ -37,8 +48,8 @@ const Profile = () => {
             <div>
               <div className="profile-photo">
                 <div>
-                  <img src={avatar} alt="User Profile avatar" />
-                  <h3>Role: Subscriber</h3>
+                  <img src={profile?.photo} alt="User Profile avatar" />
+                  <h3>Role: {profile?.role}</h3>
                 </div>
               </div>
               <form>
@@ -56,7 +67,7 @@ const Profile = () => {
                   <input
                     type="text"
                     name="name"
-                    value={name}
+                    value={profile?.name}
                     onChange={handleInputChange}
                   />
                 </p>
@@ -65,7 +76,7 @@ const Profile = () => {
                   <input
                     type="email"
                     name="email"
-                    value={email}
+                    value={profile?.email}
                     onChange={handleInputChange}
                     disabled
                   />
@@ -75,7 +86,7 @@ const Profile = () => {
                   <input
                     type="text"
                     name="phone"
-                    value={phone}
+                    value={profile?.phone}
                     onChange={handleInputChange}
                   />
                 </p>
@@ -85,7 +96,7 @@ const Profile = () => {
                     name="bio"
                     cols="30"
                     rows="10"
-                    value={bio}
+                    value={profile?.bio}
                     onChange={handleInputChange}
                   ></textarea>
                 </p>
