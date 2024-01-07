@@ -3,6 +3,7 @@ import avatar from "../../assets/avatarr.png";
 import { useState } from "react";
 import PageMenu from "../../components/pageMenu/PageMenu";
 import "./Profile.scss";
+import useRedirectLoggedOutUser from "../../hooks/useRedirectLoggedOutUser";
 
 const initialState = {
   name: "",
@@ -15,6 +16,7 @@ const initialState = {
 };
 
 const Profile = () => {
+  useRedirectLoggedOutUser("/login");
   const [profile, setProfile] = useState(initialState);
   const { name, email, phone, photo, bio, role, isVerified } = profile;
 
