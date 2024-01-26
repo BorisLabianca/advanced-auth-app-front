@@ -13,17 +13,19 @@ import ChangePassword from "./pages/changePassword/ChangePassword";
 import UserList from "./pages/userList/UserList";
 import axios from "axios";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { loginStatus } from "./redux/features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser, loginStatus } from "./redux/features/auth/authSlice";
 
 axios.defaults.withCredentials = true;
 
 function App() {
   const dispatch = useDispatch();
+  const { user, isLoggedIn } = useSelector((store) => store.auth);
 
   useEffect(() => {
     dispatch(loginStatus());
-  }, [dispatch]);
+    if (isLoggedIn && user === null) dispatch(getUser());
+  }, [dispatch, isLoggedIn, user]);
   return (
     <>
       <Router>

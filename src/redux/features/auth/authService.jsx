@@ -34,6 +34,18 @@ const getUser = async () => {
   return response.data.user;
 };
 
-const authService = { register, login, logout, loginStatus, getUser };
+const updateUser = async (userData) => {
+  const response = await axios.patch(`${apiUrl}update-user`, userData);
+  return response.data.user;
+};
+
+const authService = {
+  register,
+  login,
+  logout,
+  loginStatus,
+  getUser,
+  updateUser,
+};
 
 export default authService;

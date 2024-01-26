@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { RESET, logout } from "../../redux/features/auth/authSlice";
 import { useNotification } from "../../hooks";
 import { ShowWhileLoggedIn, ShowWhileLoggedOut } from "../protect/HiddenLink";
+import { UserName } from "../../pages/profile/Profile";
 
 const activeLink = ({ isActive }) => (isActive ? "active" : "");
 
@@ -47,7 +48,7 @@ const Header = () => {
           <ShowWhileLoggedIn>
             <li className="--flex-center">
               <FaUserCircle size={20} />
-              <p className="--color-white --ml5px">Hi, Bobs</p>
+              <UserName />
             </li>
           </ShowWhileLoggedIn>
           <ShowWhileLoggedOut>
