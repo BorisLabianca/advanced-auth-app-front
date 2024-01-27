@@ -9,11 +9,19 @@ import { getUser, updateUser } from "../../redux/features/auth/authSlice";
 import Loader from "../../components/loader/Loader";
 import { useNotification } from "../../hooks";
 
+const shortenText = (text, num) => {
+  if (text.length > num) {
+    const shortenedText = text.substring(0, num).concat("...");
+    return shortenedText;
+  }
+  return text;
+};
+
 const Profile = () => {
   useRedirectLoggedOutUser("/login");
   const { updateNotification } = useNotification();
   const dispatch = useDispatch();
-  const { isLoading, user, isSuccess } = useSelector((state) => state.auth);
+  const { isLoading, user } = useSelector((state) => state.auth);
   const initialState = {
     name: user?.name || "",
     email: user?.email || "",
@@ -59,9 +67,7 @@ const Profile = () => {
     }
     try {
       dispatch(updateUser(userData));
-      if (!isLoading && user !== null) {
-        updateNotification("success", "User updated successfully.");
-      }
+      updateNotification("success", "User updated successfully.");
     } catch (error) {
       updateNotification("error", error);
     }
@@ -169,10 +175,12 @@ const Profile = () => {
   );
 };
 
-export const UserName = (params) => {
+export const UserName = () => {
   const { user } = useSelector((store) => store.auth);
   const username = user?.name || "...";
-  return <p className="--color-white --ml5px">Hi, {username} |</p>;
+  return (
+    <p className="--color-white --ml5px">Hi, {shortenText(username, 10)} |</p>
+  );
 };
 
 export default Profile;
