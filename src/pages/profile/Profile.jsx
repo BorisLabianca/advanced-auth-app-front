@@ -13,12 +13,12 @@ const Profile = () => {
   useRedirectLoggedOutUser("/login");
   const { updateNotification } = useNotification();
   const dispatch = useDispatch();
-  const { isLoading, user } = useSelector((state) => state.auth);
+  const { isLoading, user, isSuccess } = useSelector((state) => state.auth);
   const initialState = {
     name: user?.name || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    photo: user?.photo || "",
+    photo: user?.photo?.url || "",
     bio: user?.bio || "",
     role: user?.role || "",
     isVerified: user?.isVerified || false,
@@ -59,6 +59,9 @@ const Profile = () => {
     }
     try {
       dispatch(updateUser(userData));
+      if (!isLoading && user !== null) {
+        updateNotification("success", "User updated successfully.");
+      }
     } catch (error) {
       updateNotification("error", error);
     }
@@ -75,7 +78,7 @@ const Profile = () => {
         name: user?.name,
         email: user?.email,
         phone: user?.phone,
-        photo: user?.photo,
+        photo: user?.photo?.url,
         bio: user?.bio,
         role: user?.role,
         isVerified: user?.isVerified,
