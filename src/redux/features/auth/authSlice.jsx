@@ -150,11 +150,28 @@ export const changePassword = createAsyncThunk(
     }
   }
 );
-export const forgoPassword = createAsyncThunk(
+export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (userData, thunkAPI) => {
     try {
       return await authService.forgotPassword(userData);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data) ||
+        error.message ||
+        error.response.data.error ||
+        error.response.data.warning ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ userData, resetToken }, thunkAPI) => {
+    try {
+      // console.log("From AUTHSLICE: ", passwordResetToken);
+      return await authService.resetPassword(userData, resetToken);
     } catch (error) {
       const message =
         (error.response && error.response.data) ||
@@ -301,6 +318,32 @@ const authSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(changePassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(forgotPassword.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(resetPassword.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

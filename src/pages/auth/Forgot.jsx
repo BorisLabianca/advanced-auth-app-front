@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useNotification } from "../../hooks";
 import { validateEmail } from "../../redux/features/auth/authService";
 import { useDispatch, useSelector } from "react-redux";
-import { RESET, forgoPassword } from "../../redux/features/auth/authSlice";
+import { RESET, forgotPassword } from "../../redux/features/auth/authSlice";
 import Loader from "../../components/loader/Loader";
 
 const Forgot = () => {
@@ -31,7 +31,7 @@ const Forgot = () => {
 
     const userData = { email };
 
-    await dispatch(forgoPassword(userData));
+    await dispatch(forgotPassword(userData));
     await dispatch(RESET());
   };
 
