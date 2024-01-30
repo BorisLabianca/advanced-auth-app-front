@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { ForAdminAuthorOnly } from "../protect/HiddenLink";
 
 const PageMenu = () => {
   return (
@@ -11,9 +12,11 @@ const PageMenu = () => {
           <li>
             <NavLink to="/change-password">Change Password</NavLink>
           </li>
-          <li>
-            <NavLink to="/users">Users</NavLink>
-          </li>
+          <ForAdminAuthorOnly>
+            <li>
+              <NavLink to="/users">Users</NavLink>
+            </li>
+          </ForAdminAuthorOnly>
         </ul>
       </nav>
     </div>

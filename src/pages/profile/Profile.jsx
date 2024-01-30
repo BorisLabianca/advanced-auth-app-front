@@ -10,7 +10,7 @@ import Loader from "../../components/loader/Loader";
 import { useNotification } from "../../hooks";
 import Notification from "../../components/notification/Notification";
 
-const shortenText = (text, num) => {
+export const shortenText = (text, num) => {
   if (text.length > num) {
     const shortenedText = text.substring(0, num).concat("...");
     return shortenedText;

@@ -183,6 +183,22 @@ export const resetPassword = createAsyncThunk(
     }
   }
 );
+export const getUsers = createAsyncThunk(
+  "auth/getUsers",
+  async (_, thunkAPI) => {
+    try {
+      return await authService.getUsers();
+    } catch (error) {
+      const message =
+        (error.response && error.response.data) ||
+        error.message ||
+        error.response.data.error ||
+        error.response.data.warning ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -344,6 +360,19 @@ const authSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(resetPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getUsers.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUsers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.users = action.payload;
+      })
+      .addCase(getUsers.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

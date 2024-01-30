@@ -22,8 +22,7 @@ export const ShowWhileLoggedOut = ({ children }) => {
 
 export const ForAdminAuthorOnly = ({ children }) => {
   const { user, isLoggedIn } = useSelector((store) => store.auth);
-
-  if (isLoggedIn && (user.role === "admin" || user.role === "author")) {
+  if (isLoggedIn && (user?.role === "admin" || user?.role === "author")) {
     return <>{children}</>;
   } else {
     return null;
