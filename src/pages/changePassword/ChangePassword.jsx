@@ -14,6 +14,7 @@ import {
   logout,
 } from "../../redux/features/auth/authSlice";
 import { Spinner } from "../../components/loader/Loader";
+import { sendAutomatedEmail } from "../../redux/features/email/emailSlice";
 
 const initialState = {
   currentPassword: "",
@@ -77,9 +78,17 @@ const ChangePassword = () => {
       );
 
     const userData = { currentPassword, newPassword };
+    const emailData = {
+      subject: "Password changed - AdvAUTH",
+      send_to: user.email,
+      reply_to: "noreply@advauth.com",
+      template: "changePassword",
+      url: "/forgot",
+    };
 
     try {
       await dispatch(changePassword(userData));
+      await dispatch(sendAutomatedEmail(emailData));
       await dispatch(RESET());
       await dispatch(logout());
       updateNotification(
