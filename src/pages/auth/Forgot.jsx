@@ -3,16 +3,41 @@ import Card from "../../components/card/Card";
 import styles from "./Auth.module.scss";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNotification } from "../../hooks";
+import { validateEmail } from "../../redux/features/auth/authService";
+import { useDispatch, useSelector } from "react-redux";
+import { RESET, forgoPassword } from "../../redux/features/auth/authSlice";
+import Loader from "../../components/loader/Loader";
 
 const Forgot = () => {
+  const { updateNotification } = useNotification();
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((store) => store.auth);
   const [email, setEmail] = useState("");
 
-  const handleInputChange = (event) => {};
+  const handleInputChange = (event) => {
+    setEmail(event.target.value);
+  };
 
-  const loginUser = (params) => {};
+  const forgotPSWD = async (event) => {
+    event.preventDefault();
+    if (!email)
+      return updateNotification("warning", "Please enter your email address.");
+    if (!validateEmail(email))
+      return updateNotification(
+        "warning",
+        "Please enter a valid email address."
+      );
+
+    const userData = { email };
+
+    await dispatch(forgoPassword(userData));
+    await dispatch(RESET());
+  };
 
   return (
     <div className={`container ${styles.auth}`}>
+      {isLoading && <Loader />}
       <Card>
         <div className={styles.form}>
           <div className="--flex-center">
@@ -20,7 +45,7 @@ const Forgot = () => {
           </div>
           <h2>Forgot Password?</h2>
 
-          <form onSubmit={loginUser}>
+          <form onSubmit={forgotPSWD}>
             <input
               type="email"
               placeholder="Email"
