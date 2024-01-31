@@ -80,6 +80,11 @@ const deleteUser = async (id) => {
   return response.data.message;
 };
 
+const upgradeUser = async (userData) => {
+  const response = await axios.patch(`${apiUrl}upgrade-user`, userData);
+  return response.data.message;
+};
+
 const authService = {
   register,
   login,
@@ -94,6 +99,7 @@ const authService = {
   resetPassword,
   getUsers,
   deleteUser,
+  upgradeUser,
 };
 
 export default authService;

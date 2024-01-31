@@ -215,6 +215,22 @@ export const deleteUser = createAsyncThunk(
     }
   }
 );
+export const upgradeUser = createAsyncThunk(
+  "auth/upgradeUser",
+  async (userData, thunkAPI) => {
+    try {
+      return await authService.upgradeUser(userData);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data) ||
+        error.message ||
+        error.response.data.error ||
+        error.response.data.warning ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -402,6 +418,19 @@ const authSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(deleteUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(upgradeUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(upgradeUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload;
+      })
+      .addCase(upgradeUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
