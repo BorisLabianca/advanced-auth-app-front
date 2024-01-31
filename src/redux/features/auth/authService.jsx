@@ -75,6 +75,11 @@ const getUsers = async () => {
   return response.data.users;
 };
 
+const deleteUser = async (id) => {
+  const response = await axios.delete(`${apiUrl}delete/${id}`);
+  return response.data.message;
+};
+
 const authService = {
   register,
   login,
@@ -88,6 +93,7 @@ const authService = {
   forgotPassword,
   resetPassword,
   getUsers,
+  deleteUser,
 };
 
 export default authService;

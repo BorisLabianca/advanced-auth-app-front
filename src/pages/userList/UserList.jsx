@@ -7,18 +7,49 @@ import ChangeRole from "../../components/changeRole/ChangeRole";
 import { useDispatch, useSelector } from "react-redux";
 import useRedirectLoggedOutUser from "../../hooks/useRedirectLoggedOutUser";
 import { useEffect } from "react";
-import { getUsers } from "../../redux/features/auth/authSlice";
+import { deleteUser, getUsers } from "../../redux/features/auth/authSlice";
 import { shortenText } from "../profile/Profile";
 import { Spinner } from "../../components/loader/Loader";
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { useNotification } from "../../hooks";
 
 const UserList = () => {
   useRedirectLoggedOutUser("/login");
   const dispatch = useDispatch();
-  const { users, isLoading } = useSelector((store) => store.auth);
+  const { updateNotification } = useNotification();
+  const { users, isLoading, message } = useSelector((store) => store.auth);
+
+  const removeUser = async (id) => {
+    await dispatch(deleteUser(id));
+    dispatch(getUsers());
+  };
+
+  const confirmDelete = (id) => {
+    confirmAlert({
+      title: "Delete this user",
+      message: "Are you sure to do this?",
+      buttons: [
+        {
+          label: "Delete",
+          onClick: () => removeUser(id),
+        },
+        {
+          label: "Cancel",
+        },
+      ],
+    });
+  };
 
   useEffect(() => {
     dispatch(getUsers());
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (message) {
+      updateNotification("success", message);
+    }
+  }, [message]);
 
   return (
     <section className="verify">
@@ -63,8 +94,12 @@ const UserList = () => {
                           <ChangeRole />
                         </td>
                         <td>
-                          <span>
-                            <FaTrashAlt color="red" size={20} />
+                          <span className="icons">
+                            <FaTrashAlt
+                              color="red"
+                              size={20}
+                              onClick={() => confirmDelete(_id)}
+                            />
                           </span>
                         </td>
                       </tr>
