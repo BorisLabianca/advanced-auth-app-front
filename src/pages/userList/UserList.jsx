@@ -6,19 +6,22 @@ import "./UserList.scss";
 import ChangeRole from "../../components/changeRole/ChangeRole";
 import { useDispatch, useSelector } from "react-redux";
 import useRedirectLoggedOutUser from "../../hooks/useRedirectLoggedOutUser";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { deleteUser, getUsers } from "../../redux/features/auth/authSlice";
 import { shortenText } from "../profile/Profile";
 import { Spinner } from "../../components/loader/Loader";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { useNotification } from "../../hooks";
+import { FILTER_USERS } from "../../redux/features/auth/filterSlice";
 
 const UserList = () => {
   useRedirectLoggedOutUser("/login");
   const dispatch = useDispatch();
   const { updateNotification } = useNotification();
   const { users, isLoading, message } = useSelector((store) => store.auth);
+  const { filteredUsers } = useSelector((store) => store.filter);
+  const [search, setSearch] = useState("");
 
   const removeUser = async (id) => {
     await dispatch(deleteUser(id));
@@ -50,6 +53,9 @@ const UserList = () => {
       updateNotification("success", message);
     }
   }, [message]);
+  useEffect(() => {
+    dispatch(FILTER_USERS({ users, search }));
+  }, [dispatch, search, users]);
 
   return (
     <section className="verify">
@@ -64,7 +70,10 @@ const UserList = () => {
                 <h3>All Users</h3>
               </span>
               <span>
-                <Search />
+                <Search
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                />
               </span>
             </div>
             {!isLoading && users.length === 0 ? (
@@ -82,7 +91,7 @@ const UserList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user, index) => {
+                  {filteredUsers.map((user, index) => {
                     const { _id, name, email, role } = user;
                     return (
                       <tr key={_id}>
