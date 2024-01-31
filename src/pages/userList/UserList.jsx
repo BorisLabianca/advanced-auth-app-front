@@ -59,7 +59,7 @@ const UserList = () => {
   }, [dispatch, search, users]);
 
   // Pagination
-  const itemsPerPage = 1;
+  const itemsPerPage = 5;
   const [itemOffset, setItemOffset] = useState(0);
 
   const endOffset = itemOffset + itemsPerPage;
@@ -138,7 +138,7 @@ const UserList = () => {
             breakLabel="..."
             nextLabel="Next >"
             onPageChange={handlePageClick}
-            pageRangeDisplayed={5}
+            pageRangeDisplayed={3}
             pageCount={pageCount}
             previousLabel="< Prev"
             renderOnZeroPageCount={null}
