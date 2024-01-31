@@ -14,6 +14,7 @@ import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { useNotification } from "../../hooks";
 import { FILTER_USERS } from "../../redux/features/auth/filterSlice";
+import ReactPaginate from "react-paginate";
 
 const UserList = () => {
   useRedirectLoggedOutUser("/login");
@@ -57,6 +58,20 @@ const UserList = () => {
     dispatch(FILTER_USERS({ users, search }));
   }, [dispatch, search, users]);
 
+  // Pagination
+  const itemsPerPage = 1;
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItems = filteredUsers.slice(itemOffset, endOffset);
+  const pageCount = Math.ceil(filteredUsers.length / itemsPerPage);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % filteredUsers.length;
+
+    setItemOffset(newOffset);
+  };
+  // Pagination end
   return (
     <section className="verify">
       <div className="container">
@@ -91,7 +106,7 @@ const UserList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user, index) => {
+                  {currentItems.map((user, index) => {
                     const { _id, name, email, role } = user;
                     return (
                       <tr key={_id}>
@@ -117,7 +132,22 @@ const UserList = () => {
                 </tbody>
               </table>
             )}
+            <hr />
           </div>
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="Next >"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            pageCount={pageCount}
+            previousLabel="< Prev"
+            renderOnZeroPageCount={null}
+            containerClassName="pagination"
+            pageLinkClassName="page-num"
+            previousLinkClassName="page-num"
+            nextLinkClassName="page-num"
+            activeLinkClassName="activePage"
+          />
         </div>
       </div>
     </section>
