@@ -92,6 +92,12 @@ const sendLoginCode = async (email) => {
 
 const loginWithCode = async (code, email) => {
   const response = await axios.post(`${apiUrl}login-with-code/${email}`, code);
+  // console.log(response);
+  return response.data.user;
+};
+
+const loginWithGoogle = async (userToken) => {
+  const response = await axios.post(`${apiUrl}google/callback`, userToken);
   console.log(response);
   return response.data.user;
 };
@@ -113,6 +119,7 @@ const authService = {
   upgradeUser,
   sendLoginCode,
   loginWithCode,
+  loginWithGoogle,
 };
 
 export default authService;

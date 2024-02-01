@@ -265,6 +265,22 @@ export const loginWithCode = createAsyncThunk(
     }
   }
 );
+export const loginWithGoogle = createAsyncThunk(
+  "auth/loginWithGoogle",
+  async (userToken, thunkAPI) => {
+    try {
+      return await authService.loginWithGoogle(userToken);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data) ||
+        error.message ||
+        error.response.data.error ||
+        error.response.data.warning ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -528,6 +544,22 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(loginWithCode.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.user = null;
+      })
+      .addCase(loginWithGoogle.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isLoggedIn = true;
+        console.log(action.payload);
+        state.user = action.payload;
+      })
+      .addCase(loginWithGoogle.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

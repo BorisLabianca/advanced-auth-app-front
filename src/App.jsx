@@ -15,6 +15,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, loginStatus } from "./redux/features/auth/authSlice";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 axios.defaults.withCredentials = true;
 
@@ -29,20 +30,24 @@ function App() {
   return (
     <>
       <Router>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot" element={<Forgot />} />
-          <Route path="/reset-password/:resetToken" element={<Reset />} />
-          <Route path="/login-with-code/:email" element={<LoginWithCode />} />
-          <Route path="/verify/:verificationToken" element={<Verify />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/users" element={<UserList />} />
-        </Routes>
-        <Footer />
+        <GoogleOAuthProvider
+          clientId={import.meta.env.VITE_ADV_AUTH_GOOGLE_CLIENT_ID}
+        >
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot" element={<Forgot />} />
+            <Route path="/reset-password/:resetToken" element={<Reset />} />
+            <Route path="/login-with-code/:email" element={<LoginWithCode />} />
+            <Route path="/verify/:verificationToken" element={<Verify />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/change-password" element={<ChangePassword />} />
+            <Route path="/users" element={<UserList />} />
+          </Routes>
+          <Footer />
+        </GoogleOAuthProvider>
       </Router>
     </>
   );
