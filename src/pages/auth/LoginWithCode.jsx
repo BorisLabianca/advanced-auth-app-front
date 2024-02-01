@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNotification } from "../../hooks";
-import { RESET, loginWithCode } from "../../redux/features/auth/authSlice";
+import {
+  RESET,
+  loginWithCode,
+  sendLoginCode,
+} from "../../redux/features/auth/authSlice";
 import Loader from "../../components/loader/Loader";
 
 const LoginWithCode = () => {
@@ -33,6 +37,11 @@ const LoginWithCode = () => {
     };
 
     await dispatch(loginWithCode({ code, email }));
+  };
+
+  const sendUserLoginCode = async () => {
+    await dispatch(sendLoginCode(email));
+    await dispatch(RESET());
   };
 
   useEffect(() => {
@@ -77,7 +86,7 @@ const LoginWithCode = () => {
               <p>
                 <Link to="/">Home</Link>
               </p>
-              <p className="v-link --color-primary">
+              <p className="v-link --color-primary" onClick={sendUserLoginCode}>
                 <b>Resend Code</b>
               </p>
             </div>
