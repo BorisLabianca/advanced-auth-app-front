@@ -40,7 +40,7 @@ export const login = createAsyncThunk(
         (error.response && error.response.data) ||
         error.message ||
         error.response.data.error ||
-        error.response.data.warning ||
+        error.response.data?.warning ||
         error.toString();
       return thunkAPI.rejectWithValue(message);
     }
@@ -249,6 +249,22 @@ export const sendLoginCode = createAsyncThunk(
     }
   }
 );
+export const loginWithCode = createAsyncThunk(
+  "auth/loginWithCode",
+  async ({ code, email }, thunkAPI) => {
+    try {
+      return await authService.loginWithCode(code, email);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data) ||
+        error.message ||
+        error.response.data.error ||
+        error.response.data.warning ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -321,8 +337,11 @@ const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         state.user = null;
-        if (action.payload.warning.includes("login code")) {
-          state.twoFactor = true;
+        // console.log(action.payload);
+        if (action.payload?.warning) {
+          if (action.payload?.warning.includes("login code")) {
+            state.twoFactor = true;
+          }
         }
       })
       .addCase(logout.pending, (state, action) => {
@@ -496,6 +515,23 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(loginWithCode.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginWithCode.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isLoggedIn = true;
+        state.twoFactor = false;
+        console.log(action.payload);
+        state.user = action.payload;
+      })
+      .addCase(loginWithCode.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.user = null;
       });
   },
 });
