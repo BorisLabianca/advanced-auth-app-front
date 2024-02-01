@@ -7,7 +7,11 @@ import PasswordInput from "../../components/passwordInput/PasswordInput";
 import { useDispatch, useSelector } from "react-redux";
 import { useNotification } from "../../hooks";
 import { validateEmail } from "../../redux/features/auth/authService";
-import { RESET, login } from "../../redux/features/auth/authSlice";
+import {
+  RESET,
+  login,
+  sendLoginCode,
+} from "../../redux/features/auth/authSlice";
 import Loader from "../../components/loader/Loader";
 
 const initialState = {
@@ -21,9 +25,8 @@ const Login = () => {
   const { updateNotification } = useNotification();
   const [formData, setFormData] = useState(initialState);
   const { email, password } = formData;
-  const { isLoading, isLoggedIn, isSuccess, message, isError } = useSelector(
-    (store) => store.auth
-  );
+  const { isLoading, isLoggedIn, isSuccess, message, isError, twoFactor } =
+    useSelector((store) => store.auth);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -57,8 +60,22 @@ const Login = () => {
         message[Object.keys(message)[0]]
       );
     }
+    if (isError && twoFactor) {
+      dispatch(sendLoginCode(email));
+      navigate(`/login-with-code/${email}`);
+    }
+
     dispatch(RESET());
-  }, [isLoggedIn, isSuccess, dispatch, navigate, isError, message]);
+  }, [
+    isLoggedIn,
+    isSuccess,
+    dispatch,
+    navigate,
+    isError,
+    message,
+    twoFactor,
+    email,
+  ]);
 
   return (
     <div className={`container ${styles.auth}`}>

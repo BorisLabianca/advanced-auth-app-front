@@ -233,6 +233,22 @@ export const upgradeUser = createAsyncThunk(
     }
   }
 );
+export const sendLoginCode = createAsyncThunk(
+  "auth/sendLoginCode",
+  async (email, thunkAPI) => {
+    try {
+      return await authService.sendLoginCode(email);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data) ||
+        error.message ||
+        error.response.data.error ||
+        error.response.data.warning ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -305,6 +321,9 @@ const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         state.user = null;
+        if (action.payload.warning.includes("login code")) {
+          state.twoFactor = true;
+        }
       })
       .addCase(logout.pending, (state, action) => {
         state.isLoading = true;
@@ -461,6 +480,19 @@ const authSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(upgradeUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(sendLoginCode.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(sendLoginCode.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload;
+      })
+      .addCase(sendLoginCode.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
