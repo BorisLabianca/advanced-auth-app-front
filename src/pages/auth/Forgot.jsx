@@ -1,7 +1,7 @@
 import { AiOutlineMail } from "react-icons/ai";
 import Card from "../../components/card/Card";
 import styles from "./Auth.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNotification } from "../../hooks";
 import { validateEmail } from "../../redux/features/auth/authService";
@@ -12,7 +12,9 @@ import Loader from "../../components/loader/Loader";
 const Forgot = () => {
   const { updateNotification } = useNotification();
   const dispatch = useDispatch();
-  const { isLoading } = useSelector((store) => store.auth);
+  const { isLoading, isError, isSuccess, message } = useSelector(
+    (store) => store.auth
+  );
   const [email, setEmail] = useState("");
 
   const handleInputChange = (event) => {
@@ -34,6 +36,19 @@ const Forgot = () => {
     await dispatch(forgotPassword(userData));
     await dispatch(RESET());
   };
+
+  useEffect(() => {
+    if (isError) {
+      updateNotification(
+        Object.keys(message)[0],
+        message[Object.keys(message)[0]]
+      );
+    }
+    if (isSuccess) {
+      updateNotification("success", message);
+      dispatch(RESET());
+    }
+  }, [isSuccess, dispatch, isError, message]);
 
   return (
     <div className={`container ${styles.auth}`}>
